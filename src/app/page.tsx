@@ -15,8 +15,11 @@ export default function Home() {
   const [news, setNews] = useState<string[]>([]);
   const [wikiQuery, setWikiQuery] = useState('');
   const [wikiResult, setWikiResult] = useState('');
+  //const { speak, listen, isSpeechSupported, isRecognitionSupported } = useSpeech();
+  //const { speak, listen, isRecognitionSupported } = useSpeech()
+  const { speak, listen, isSpeechSupported: _isSpeechSupported, isRecognitionSupported } = useSpeech();
 
-  const { speak, listen, isSpeechSupported, isRecognitionSupported } = useSpeech();
+  //const { speak, listen, isSpeechSupported, isRecognitionSupported } = useSpeech();
   const [spokenText, setSpokenText] = useState('');
   const [responseText, setResponseText] = useState('');
   const [isListening, setIsListening] = useState(false);
