@@ -1,3 +1,8 @@
+declare global {
+  interface Window {
+    webkitSpeechRecognition: any;
+  }
+}
 // --- Add these custom types manually ---
 type SpeechRecognitionAlternative = {
   transcript: string;
@@ -32,8 +37,9 @@ export function useSpeech() {
 
   const listen = (onResult: (text: string) => void, onEnd?: () => void) => {
     if (!isRecognitionSupported) return;
-
-    const SpeechRecognition = (window as any).webkitSpeechRecognition;
+    //const SpeechRecognition = (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = window.webkitSpeechRecognition;
+    //const SpeechRecognition = (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
 
     recognition.lang = 'en-US';

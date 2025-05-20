@@ -17,8 +17,8 @@ export default function Home() {
   const [wikiResult, setWikiResult] = useState('');
   //const { speak, listen, isSpeechSupported, isRecognitionSupported } = useSpeech();
   //const { speak, listen, isRecognitionSupported } = useSpeech()
-  const { speak, listen, isSpeechSupported: _isSpeechSupported, isRecognitionSupported } = useSpeech();
-
+  //const { speak, listen, isSpeechSupported: _isSpeechSupported, isRecognitionSupported } = useSpeech();
+  const { speak, listen, isRecognitionSupported } = useSpeech();
   //const { speak, listen, isSpeechSupported, isRecognitionSupported } = useSpeech();
   const [spokenText, setSpokenText] = useState('');
   const [responseText, setResponseText] = useState('');
@@ -52,7 +52,8 @@ export default function Home() {
 useEffect(() => {
   axios.get(`https://newsapi.org/v2/top-headlines?country=us&pageSize=5&apiKey=5c71568327884567b9d48e053fd062de`)
     .then((res) => {
-      const headlines = res.data.articles.map((a: any) => a.title);
+      const headlines = res.data.articles.map((a: { title: string }) => a.title);
+      //const headlines = res.data.articles.map((a: any) => a.title);
       setNews(headlines);
     })
     .catch(() => setNews(["Unable to load news at this time."]));
