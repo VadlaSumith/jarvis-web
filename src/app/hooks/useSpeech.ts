@@ -1,8 +1,20 @@
-//declare global {
-  //interface Window {
-    //webkitSpeechRecognition: any;
-  //}
-//}
+declare global {
+  interface Window {
+  webkitSpeechRecognition: {
+    new (): {
+      start(): void;
+      stop(): void;
+      abort(): void;
+      lang: string;
+      interimResults: boolean;
+      maxAlternatives: number;
+      onresult: (event: SpeechRecognitionEventLike) => void;
+      onerror: () => void;
+      onend: () => void;
+    };
+  };
+}
+}
 // --- Add these custom types manually ---
 type SpeechRecognitionAlternative = {
   transcript: string;
