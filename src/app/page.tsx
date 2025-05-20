@@ -15,11 +15,7 @@ export default function Home() {
   const [news, setNews] = useState<string[]>([]);
   const [wikiQuery, setWikiQuery] = useState('');
   const [wikiResult, setWikiResult] = useState('');
-  //const { speak, listen, isSpeechSupported, isRecognitionSupported } = useSpeech();
-  //const { speak, listen, isRecognitionSupported } = useSpeech()
-  //const { speak, listen, isSpeechSupported: _isSpeechSupported, isRecognitionSupported } = useSpeech();
   const { speak, listen, isRecognitionSupported } = useSpeech();
-  //const { speak, listen, isSpeechSupported, isRecognitionSupported } = useSpeech();
   const [spokenText, setSpokenText] = useState('');
   const [responseText, setResponseText] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -47,7 +43,6 @@ export default function Home() {
       .then(res => setLocation(`${res.data.city}, ${res.data.country}`))
       .catch(() => setLocation("Unknown Location"));
   }, []);
-
   // Fetch top news on load
 useEffect(() => {
   axios.get(`https://newsapi.org/v2/top-headlines?country=us&pageSize=5&apiKey=5c71568327884567b9d48e053fd062de`)
@@ -58,7 +53,6 @@ useEffect(() => {
     })
     .catch(() => setNews(["Unable to load news at this time."]));
 }, []);
-
   // Handle voice command
 const handleVoiceCommand = () => {
   if (!isRecognitionSupported) {

@@ -34,7 +34,6 @@ export function useSpeech() {
     utterance.rate = 1;
     window.speechSynthesis.speak(utterance);
   };
-
   const listen = (onResult: (text: string) => void, onEnd?: () => void) => {
     if (!isRecognitionSupported) return;
     //const SpeechRecognition = (window as any).webkitSpeechRecognition;
