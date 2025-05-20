@@ -1,8 +1,8 @@
-declare global {
-  interface Window {
-    webkitSpeechRecognition: any;
-  }
-}
+//declare global {
+  //interface Window {
+    //webkitSpeechRecognition: any;
+  //}
+//}
 // --- Add these custom types manually ---
 type SpeechRecognitionAlternative = {
   transcript: string;
