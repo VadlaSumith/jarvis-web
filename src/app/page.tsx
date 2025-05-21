@@ -19,6 +19,8 @@ export default function Home() {
   const [spokenText, setSpokenText] = useState('');
   const [responseText, setResponseText] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [gptPrompt, setGptPrompt] = useState('');
+  const [gptResponse, setGptResponse] = useState(''); 
 
   useEffect(() => {
     const now = new Date();
@@ -69,6 +71,20 @@ const handleVoiceCommand = () => {
 };
 
 // Handle command logic
+const askGroq = async () => {
+  if (!gptPrompt) return;
+
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt: gptPrompt }),
+  });
+
+  const data = await res.json();
+  setGptResponse(data.result);
+  speak(data.result); // Optional: have Jarvis read it aloud
+};
+
 const handleCommand = (input: string) => {
   const cmd = input.toLowerCase();
   let response = "Sorry, I didn't get that.";
@@ -201,6 +217,39 @@ const handleCommand = (input: string) => {
         </>
       ),
     },
+    {
+  id: 'gpt-chat',
+  content: (
+    <>
+      <h2>🤖 GPT Chat (Groq)</h2>
+      <input
+        type="text"
+        placeholder="Ask Jarvis something..."
+        value={gptPrompt}
+        onChange={(e) => setGptPrompt(e.target.value)}
+      />
+      <button
+        onClick={askGroq}
+        style={{
+          marginTop: '10px',
+          padding: '8px 16px',
+          border: 'none',
+          backgroundColor: '#0bc',
+          color: '#fff',
+          borderRadius: '6px',
+          cursor: 'pointer',
+        }}
+      >
+        Ask
+      </button>
+      {gptResponse && (
+        <p style={{ marginTop: '10px' }}>
+          <strong>Jarvis:</strong> {gptResponse}
+        </p>
+      )}
+    </>
+  ),
+},
     {
       id: 'voice-command',
       content: (
