@@ -26,6 +26,6 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     return NextResponse.json({ result: data.choices[0].message.content });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to connect to Groq API' }, { status: 500 });
+    //return NextResponse.json({ error: 'Failed to connect to Groq API' }, { status: 500 });
   }
 }
