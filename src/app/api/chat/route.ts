@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
         Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'mistral-saba-24b', // or 'llama3-70b-8192'
+        model: 'meta-llama/llama-4-scout-17b-16e-instruct', // or 'llama3-70b-8192'
         messages: [
           { role: 'system', content: 'You are Jarvis, a helpful assistant.' },
           { role: 'user', content: prompt }
