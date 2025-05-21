@@ -7,26 +7,43 @@ body {
 }
 
 main {
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  min-height: 100vh;
-  max-width: 800px;
+  max-width: 1200px;
   margin: auto;
+  padding: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
 section {
-  background: #1e2227;
-  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
   border-radius: 12px;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.1);
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
-input {
-  width: 100%;
+section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+input, button {
+  font-size: 1rem;
   padding: 0.75rem;
   border-radius: 8px;
   border: none;
-  margin-top: 0.5rem;
+  margin-top: 10px;
+  width: 100%;
+}
+
+button {
+  background-color: #0bc;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0aa;
 }

@@ -129,7 +129,13 @@ const handleCommand = (input: string) => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ delay: 0.1 }}
-    className="text-4xl font-bold text-center"
+    style={{
+      gridColumn: '1 / -1',
+      textAlign: 'center',
+      fontSize: '2rem',
+      fontWeight: 'bold',
+      marginBottom: '1rem'
+    }}
   >
     🧠 Jarvis Web Assistant
   </motion.h1>
