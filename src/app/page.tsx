@@ -290,7 +290,7 @@ const handleCommand = (input: string) => {
                 </div>
               </>
             )
-          }
+          },
           {
             id: 'voice-command',
             content: (
