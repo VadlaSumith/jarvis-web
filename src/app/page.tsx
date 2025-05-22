@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { useSpeech } from './hooks/useSpeech';
 
 export default function Home() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [chatHistory, setChatHistory] = useState<{ role: string, content: string }[]>([]);
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
   const [quote, setQuote] = useState('');
@@ -74,6 +76,9 @@ const handleVoiceCommand = () => {
 const askGroq = async () => {
   if (!gptPrompt) return;
 
+  const newHistory = [...chatHistory, { role: 'user', content: gptPrompt }];
+  setChatHistory(newHistory);
+
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -81,9 +86,29 @@ const askGroq = async () => {
   });
 
   const data = await res.json();
-  setGptResponse(data.result);
-  speak(data.result); // Optional: have Jarvis read it aloud
+  setChatHistory([...newHistory, { role: 'assistant', content: data.result }]);
+  setGptPrompt('');
+  speak(data.result);
 };
+const toggleTheme = () => {
+  const newTheme = theme === 'dark' ? 'light' : 'dark';
+  setTheme(newTheme);
+  document.body.setAttribute('data-theme', newTheme);
+};
+
+// const askGroq = async () => {
+//   if (!gptPrompt) return;
+
+//   const res = await fetch('/api/chat', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({ prompt: gptPrompt }),
+//   });
+
+//   const data = await res.json();
+//   setGptResponse(data.result);
+//   speak(data.result); // Optional: have Jarvis read it aloud
+// };
 
 const handleCommand = (input: string) => {
   const cmd = input.toLowerCase();
@@ -124,175 +149,185 @@ const handleCommand = (input: string) => {
 };
 
   return (
-    <main>
-  <motion.h1
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.1 }}
-    style={{
-      gridColumn: '1 / -1',
-      textAlign: 'center',
-      fontSize: '2rem',
-      fontWeight: 'bold',
-      marginBottom: '1rem'
-    }}
-  >
-    🧠 Jarvis Web Assistant
-  </motion.h1>
+    <><header style={{
+      width: '100%',
+      padding: '1rem 2rem',
+      background: 'rgba(255, 255, 255, 0.05)',
+      backdropFilter: 'blur(10px)',
+      borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      color: 'white',
+      position: 'sticky',
+      top: 0,
+      zIndex: 1000
+    }}>
+      <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>🧠 Jarvis Dashboard</h1>
+      <button onClick={toggleTheme} style={{
+        background: 'transparent',
+        border: '1px solid rgba(255,255,255,0.2)',
+        borderRadius: '8px',
+        color: 'white',
+        padding: '0.5rem 1rem',
+        cursor: 'pointer'
+      }}>
+        Toggle Theme
+      </button>
+    </header><main>
+        <motion.h1
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          style={{
+            gridColumn: '1 / -1',
+            textAlign: 'center',
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            marginBottom: '1rem'
+          }}
+        >
+          🧠 Jarvis Web Assistant
+        </motion.h1>
 
-  {[
-    {
-      id: 'location-time',
-      content: (
-        <>
-          <p>📍 <strong>{location}</strong></p>
-          <p>🗓️ {date}</p>
-          <p>🕒 {time}</p>
-        </>
-      ),
-    },
-    {
-      id: 'quote',
-      content: (
-        <>
-          <h2>🌟 Quote of the Day</h2>
-          <p>{quote}</p>
-        </>
-      ),
-    },
-    {
-  id: 'news',
-  content: (
-    <>
-      <h2>📰 Top News Headlines</h2>
-      <ul>
-        {news.map((headline, i) => (
-          <li key={i}>• {headline}</li>
-        ))}
-      </ul>
-    </>
-  ),
-  },
-  {
-  id: 'wiki-search',
-  content: (
-    <>
-      <h2>🔍 Wikipedia Search</h2>
-      <input
-        placeholder="Type a topic to search..."
-        value={wikiQuery}
-        onChange={(e) => setWikiQuery(e.target.value)}
-      />
-      <button
-        onClick={() => fetchWikiSummary(wikiQuery)}
-        style={{
-          marginTop: '10px',
-          padding: '8px 16px',
-          border: 'none',
-          backgroundColor: '#0bc',
-          color: '#fff',
-          borderRadius: '6px',
-          cursor: 'pointer'
-        }}
-      >
-        Search
-      </button>
-      {wikiResult && <p style={{ marginTop: '10px' }}>{wikiResult}</p>}
-    </>
-  ),
-},
-    {
-      id: 'joke',
-      content: (
-        <>
-          <h2>😂 Joke of the Day</h2>
-          <p>{joke}</p>
-        </>
-      ),
-    },
-    {
-      id: 'text-command',
-      content: (
-        <>
-          <h2>💬 Text Command</h2>
-          <input
-            placeholder="Type a command like 'Tell me a joke'"
-            value={command}
-            onChange={(e) => setCommand(e.target.value)}
-          />
-        </>
-      ),
-    },
-    {
-  id: 'gpt-chat',
-  content: (
-    <>
-      <h2>🤖 GPT Chat (Groq)</h2>
-      <input
-        type="text"
-        placeholder="Ask Jarvis something..."
-        value={gptPrompt}
-        onChange={(e) => setGptPrompt(e.target.value)}
-      />
-      <button
-        onClick={askGroq}
-        style={{
-          marginTop: '10px',
-          padding: '8px 16px',
-          border: 'none',
-          backgroundColor: '#0bc',
-          color: '#fff',
-          borderRadius: '6px',
-          cursor: 'pointer',
-        }}
-      >
-        Ask
-      </button>
-      {gptResponse && (
-        <p style={{ marginTop: '10px' }}>
-          <strong>Jarvis:</strong> {gptResponse}
-        </p>
-      )}
-    </>
-  ),
-},
-    {
-      id: 'voice-command',
-      content: (
-        <>
-          <h2>🎙️ Voice Command</h2>
-          <button
-            onClick={handleVoiceCommand}
-            disabled={isListening}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: isListening ? '#444' : '#0bc',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-            }}
+        {[
+          {
+            id: 'location-time',
+            content: (
+              <>
+                <p>📍 <strong>{location}</strong></p>
+                <p>🗓️ {date}</p>
+                <p>🕒 {time}</p>
+              </>
+            ),
+          },
+          {
+            id: 'quote',
+            content: (
+              <>
+                <h2>🌟 Quote of the Day</h2>
+                <p>{quote}</p>
+              </>
+            ),
+          },
+          {
+            id: 'news',
+            content: (
+              <>
+                <h2>📰 Top News Headlines</h2>
+                <ul>
+                  {news.map((headline, i) => (
+                    <li key={i}>• {headline}</li>
+                  ))}
+                </ul>
+              </>
+            ),
+          },
+          {
+            id: 'wiki-search',
+            content: (
+              <>
+                <h2>🔍 Wikipedia Search</h2>
+                <input
+                  placeholder="Type a topic to search..."
+                  value={wikiQuery}
+                  onChange={(e) => setWikiQuery(e.target.value)} />
+                <button
+                  onClick={() => fetchWikiSummary(wikiQuery)}
+                  style={{
+                    marginTop: '10px',
+                    padding: '8px 16px',
+                    border: 'none',
+                    backgroundColor: '#0bc',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Search
+                </button>
+                {wikiResult && <p style={{ marginTop: '10px' }}>{wikiResult}</p>}
+              </>
+            ),
+          },
+          {
+            id: 'joke',
+            content: (
+              <>
+                <h2>😂 Joke of the Day</h2>
+                <p>{joke}</p>
+              </>
+            ),
+          },
+          {
+            id: 'text-command',
+            content: (
+              <>
+                <h2>💬 Text Command</h2>
+                <input
+                  placeholder="Type a command like 'Tell me a joke'"
+                  value={command}
+                  onChange={(e) => setCommand(e.target.value)} />
+              </>
+            ),
+          },
+          {
+            id: 'gpt-chat',
+            content: (
+              <>
+                <h2>🤖 GPT Chat</h2>
+                <input
+                  placeholder="Ask Jarvis..."
+                  value={gptPrompt}
+                  onChange={(e) => setGptPrompt(e.target.value)}
+                />
+                <button onClick={askGroq}>Ask</button>
+
+                <div style={{ maxHeight: '300px', overflowY: 'auto', marginTop: '1rem' }}>
+                  {chatHistory.map((msg, i) => (
+                    <p key={i}><strong>{msg.role === 'user' ? 'You' : 'Jarvis'}:</strong> {msg.content}</p>
+                  ))}
+                </div>
+              </>
+            )
+          }
+          {
+            id: 'voice-command',
+            content: (
+              <>
+                <h2>🎙️ Voice Command</h2>
+                <button
+                  onClick={handleVoiceCommand}
+                  disabled={isListening}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: isListening ? '#444' : '#0bc',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {isListening ? 'Listening...' : 'Speak Now'}
+                </button>
+
+                {spokenText && <p><strong>You said:</strong> {spokenText}</p>}
+                {responseText && <p><strong>Jarvis:</strong> {responseText}</p>}
+              </>
+            ),
+          },
+        ].map((item, i) => (
+          <motion.section
+            key={item.id}
+            custom={i}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
           >
-            {isListening ? 'Listening...' : 'Speak Now'}
-          </button>
-
-          {spokenText && <p><strong>You said:</strong> {spokenText}</p>}
-          {responseText && <p><strong>Jarvis:</strong> {responseText}</p>}
-        </>
-      ),
-    },
-  ].map((item, i) => (
-    <motion.section
-      key={item.id}
-      custom={i}
-      variants={cardVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {item.content}
-    </motion.section>
-  ))}
-</main>
+            {item.content}
+          </motion.section>
+        ))}
+      </main></>
 
   );
 }
