@@ -22,7 +22,7 @@ export default function Home() {
   const [responseText, setResponseText] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [gptPrompt, setGptPrompt] = useState('');
-  const [gptResponse, setGptResponse] = useState(''); 
+  //const [gptResponse, setGptResponse] = useState(''); 
 
   useEffect(() => {
     const now = new Date();
